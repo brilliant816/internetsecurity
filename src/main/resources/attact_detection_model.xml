@@ -1,0 +1,16 @@
+<attactDetectionModel>
+    <rules>
+        <rule>
+            <name>sql inject</name>
+            <regex>(SELECT|DROP)</regex>
+            <score>1</score>
+            <hdfsPath>/apps</hdfsPath>
+        </rule>
+        <rule>
+            <name>xss</name>
+            <regex>(xss)</regex>
+            <score>1</score>
+            <hdfsPath>/apps</hdfsPath>
+        </rule>
+    </rules>
+</attactDetectionModel>
