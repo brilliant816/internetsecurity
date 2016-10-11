@@ -1,0 +1,23 @@
+<crawlerDetectionModel>
+    <rules>
+        <rule>
+            <id>1</id>
+            <name>dns name detection</name>
+            <whiteList>
+                <element>baidu</element>
+                <element>google</element>
+                <element>yahoo</element>
+                <element>msn</element>
+            </whiteList>
+            <score>1</score>
+            <hdfsPath>/apps</hdfsPath>
+        </rule>
+        <rule>
+            <id>2</id>
+            <name>frequency detection</name>
+            <limit>1</limit>
+            <score>1</score>
+            <hdfsPath>/apps</hdfsPath>
+        </rule>
+    </rules>
+</crawlerDetectionModel>
