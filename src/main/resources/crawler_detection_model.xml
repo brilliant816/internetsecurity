@@ -3,12 +3,7 @@
         <rule>
             <id>1</id>
             <name>dns name detection</name>
-            <whiteList>
-                <element>baidu</element>
-                <element>google</element>
-                <element>yahoo</element>
-                <element>msn</element>
-            </whiteList>
+            <regex></regex>
             <hdfsPath>/apps</hdfsPath>
         </rule>
         <rule>
