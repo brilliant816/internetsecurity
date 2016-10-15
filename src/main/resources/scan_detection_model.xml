@@ -1,0 +1,24 @@
+<scanDetectionModel>
+    <input>/user/root/mofan/test.dat</input>
+    <userAgent>
+        <blackList>
+            <value></value>
+        </blackList>
+    </userAgent>
+    <rules>
+        <rule>
+            <id>301</id>
+            <name>java code injection</name>
+            <regex>.</regex>
+            <hdfsPath>/user/root/mofan/301</hdfsPath>
+        </rule>
+        <rule>
+            <id>303</id>
+            <name>404 threshold rule</name>
+            <threshold>
+                <count>10</count>
+                <seconds>180</seconds>
+            </threshold>
+        </rule>
+    </rules>
+</scanDetectionModel>

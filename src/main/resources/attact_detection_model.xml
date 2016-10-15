@@ -1,16 +1,18 @@
 <attactDetectionModel>
+    <input>/user/root/mofan/test.dat</input>
     <rules>
         <rule>
+            <id>201</id>
             <name>sql inject</name>
-            <regex>(SELECT|DROP)</regex>
+            <regex>.</regex>
             <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
+            <hdfsPath>/user/root/mofan/201</hdfsPath>
         </rule>
-        <rule>
-            <name>xss</name>
-            <regex>(xss)</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
+        <!--<rule>-->
+            <!--<name>xss</name>-->
+            <!--<regex>(xss)</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
     </rules>
 </attactDetectionModel>

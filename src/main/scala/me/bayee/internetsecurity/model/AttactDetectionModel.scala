@@ -1,6 +1,6 @@
 package me.bayee.internetsecurity.model
 
-import me.bayee.internetsecurity.pojo.HttpTrafficLog
+import me.bayee.internetsecurity.pojo.ModelInput
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.xml.XML
@@ -11,19 +11,20 @@ import scala.xml.XML
 object AttactDetectionModel extends App {
   override def main(args: Array[String]): Unit = {
     val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("attact_detection_model.xml"))
-    val conf = new SparkConf().setAppName("AttactDetectionModel").setMaster("local[8]")
+    val conf = new SparkConf()
+      .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
 
     val input = sc
-      .textFile("/home/mofan/Documents/guoxiong/sanxilog/2016-01-27-30.log")
-      .map(HttpTrafficLog.fromLine)
+      .textFile((xml \ "input").text)
+      .map(ModelInput.fromHttpTrafficLog)
 
     // start the model
     val base = input.filter(_.httpCode.getOrElse(-1) == 200)
 
     (xml \ "rules" \ "rule").foreach { node =>
-      base.filter(htl => (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("")).isDefined)
-        .map(_.toKeyValueWithScore((node \ "score").text))
+      base.filter(mi => (node \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).isDefined)
+        .map(_.toKeyValueWithId((node \ "id").text))
         .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }

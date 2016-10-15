@@ -9,7 +9,6 @@
                 <element>yahoo</element>
                 <element>msn</element>
             </whiteList>
-            <score>1</score>
             <hdfsPath>/apps</hdfsPath>
         </rule>
         <rule>

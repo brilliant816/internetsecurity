@@ -1,40 +1,47 @@
 <graphDetectionModel>
+    <input>/user/root/mofan/test.dat</input>
     <rules>
         <rule>
+            <id>101</id>
             <name>phpspy</name>
-            <regex>TODO</regex>
+            <regex>.</regex>
             <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
+            <hdfsPath>/user/root/mofan/101</hdfsPath>
         </rule>
-        <rule>
-            <name>knife</name>
-            <regex>TODO</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
-        <rule>
-            <name>filePath</name>
-            <regex>(file|upfile|upload|uploadfile)*\.(asp|php|jsp|aspx|phtml|asa|hta|cer)</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
-        <rule>
-            <name>iis6</name>
-            <regex>(jsp)</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
-        <rule>
-            <name>apache</name>
-            <regex>(rar)</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
-        <rule>
-            <name>nginx</name>
-            <regex>(jpg)</regex>
-            <score>1</score>
-            <hdfsPath>/apps</hdfsPath>
-        </rule>
+        <!--<rule>-->
+            <!--<id>102</id>-->
+            <!--<name>knife</name>-->
+            <!--<regex>TODO</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
+        <!--<rule>-->
+            <!--<id>103</id>-->
+            <!--<name>filePath</name>-->
+            <!--<regex>(file|upfile|upload|uploadfile)*\.(asp|php|jsp|aspx|phtml|asa|hta|cer)</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
+        <!--<rule>-->
+            <!--<id>104</id>-->
+            <!--<name>iis6</name>-->
+            <!--<regex>(jsp)</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
+        <!--<rule>-->
+            <!--<id>105</id>-->
+            <!--<name>apache</name>-->
+            <!--<regex>(rar)</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
+        <!--<rule>-->
+            <!--<id>106</id>-->
+            <!--<name>nginx</name>-->
+            <!--<regex>(jpg)</regex>-->
+            <!--<score>1</score>-->
+            <!--<hdfsPath>/apps</hdfsPath>-->
+        <!--</rule>-->
     </rules>
 </graphDetectionModel>
