@@ -3,7 +3,7 @@ package me.bayee.internetsecurity.model
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import me.bayee.internetsecurity.pojo.{HttpTrafficLog, ModelInput}
+import me.bayee.internetsecurity.pojo. ModelInput
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.xml.XML
@@ -98,10 +98,4 @@ object ScanDetectionModel extends App {
       val max = rollingTimeMaxCount(list.tail, seconds)
       if (count > max) count else max
     }
-}
-
-object Test extends App {
-  override def main(args: Array[String]): Unit = {
-    println("(rar|zip)$".r.findFirstIn("abc.rar"))
-  }
 }

@@ -16,9 +16,9 @@ case class ModelInput(visitTime: Option[String],
                       cookie: Option[String],
                       clientRequestSize: Option[Long],
                       serverResponseSize: Option[Long]
-                     ){
+                     ) {
   def toKeyValueWithId(id: String) = {
-    val line = "\"" + this.productIterator.map(_.asInstanceOf[Option[ _ >: Any]].getOrElse("")).mkString("\",\"") + "\""
+    val line = "\"" + this.productIterator.map(_.asInstanceOf[Option[_ >: Any]].getOrElse("")).mkString("\",\"") + "\""
     val key = s"${visitTime.getOrElse("")}-${new String(MessageDigest.getInstance("MD5").digest(line.getBytes))}"
     val value = line + ",\"" + id + "\""
     (key, value)
@@ -48,5 +48,22 @@ object ModelInput {
       split(7),
       split(8)
     )
+  }
+
+  def fromModelInput(line: String): (ModelInput, String) = {
+    val split = line.split("\",\"").map(_.replace("\"", ""))
+    (ModelInput(
+      split(0),
+      split(1),
+      split(2),
+      split(3),
+      split(4),
+      split(5),
+      split(6),
+      split(7),
+      split(8),
+      split(9),
+      split(10)
+    ), split(11))
   }
 }

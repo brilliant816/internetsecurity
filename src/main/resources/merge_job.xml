@@ -1,0 +1,5 @@
+<mergeJob>
+    <inputs>
+        <hdfsPath>/user/root/mofan/101</hdfsPath>
+    </inputs>
+</mergeJob>

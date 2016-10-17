@@ -3,7 +3,7 @@ package me.bayee.internetsecurity.model
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import me.bayee.internetsecurity.pojo.{HttpTrafficLog, ModelInput}
+import me.bayee.internetsecurity.pojo. ModelInput
 import org.apache.spark.{SparkConf, SparkContext}
 import org.xbill.DNS._
 
