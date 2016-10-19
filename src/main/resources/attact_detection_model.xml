@@ -4,15 +4,14 @@
         <rule>
             <id>201</id>
             <name>sql inject</name>
-            <regex>.</regex>
-            <score>1</score>
+            <regex>(select|drop)</regex>
             <hdfsPath>/user/root/mofan/201</hdfsPath>
         </rule>
-        <!--<rule>-->
-            <!--<name>xss</name>-->
-            <!--<regex>(xss)</regex>-->
-            <!--<score>1</score>-->
-            <!--<hdfsPath>/apps</hdfsPath>-->
-        <!--</rule>-->
+        <rule>
+            <id>202</id>
+            <name>xss</name>
+            <regex>(applet)</regex>
+            <hdfsPath>/user/root/mofan/202</hdfsPath>
+        </rule>
     </rules>
 </attactDetectionModel>
