@@ -1,34 +1,19 @@
 <mergeJob>
     <inputs>
         <input>
-            <hdfsPath>/home/mofan/Desktop/101</hdfsPath>
+            <hdfsPath>/user/root/mofan/101</hdfsPath>
         </input>
         <input>
-            <hdfsPath>/home/mofan/Desktop/103</hdfsPath>
+            <hdfsPath>/user/root/mofan/103</hdfsPath>
         </input>
         <input>
-            <hdfsPath>/home/mofan/Desktop/104</hdfsPath>
+            <hdfsPath>/user/root/mofan/104</hdfsPath>
         </input>
         <input>
-            <hdfsPath>/home/mofan/Desktop/105</hdfsPath>
+            <hdfsPath>/user/root/mofan/105</hdfsPath>
         </input>
         <input>
-            <hdfsPath>/home/mofan/Desktop/106</hdfsPath>
+            <hdfsPath>/user/root/mofan/106</hdfsPath>
         </input>
-        <!--<input>-->
-            <!--<hdfsPath>/user/root/mofan/101</hdfsPath>-->
-        <!--</input>-->
-        <!--<input>-->
-            <!--<hdfsPath>/user/root/mofan/103</hdfsPath>-->
-        <!--</input>-->
-        <!--<input>-->
-            <!--<hdfsPath>/user/root/mofan/104</hdfsPath>-->
-        <!--</input>-->
-        <!--<input>-->
-            <!--<hdfsPath>/user/root/mofan/105</hdfsPath>-->
-        <!--</input>-->
-        <!--<input>-->
-            <!--<hdfsPath>/user/root/mofan/106</hdfsPath>-->
-        <!--</input>-->
     </inputs>
 </mergeJob>

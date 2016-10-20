@@ -2,15 +2,54 @@
     <input>/user/root/mofan/test.dat</input>
     <userAgent>
         <blackList>
-            <value></value>
+            <value>appscan</value>
+            <value>Alibaba.Security.Heimdall</value>
+            <value>acunetix</value>
+            <value>blackwidow</value>
+            <value>sqlmap</value>
+            <value>mozilla/4.0 (compatible; msie 6.0; win32)</value>
+            <value>mozilla/5.0 sf</value>
+            <value>nessus</value>
+            <value>arachni</value>
+            <value>metis</value>
+            <value>sql power injector</value>
+            <value>bibo</value>
+            <value>absinthe</value>
+            <value>n-stealth</value>
+            <value>brutus</value>
+            <value>webtrends security analyzer</value>
+            <value>netsparker</value>
+            <value>python-httplib2</value>
+            <value>jaascois</value>
+            <value>pmafind</value>
+            <value>.nasl</value>
+            <value>nsauditor</value>
+            <value>paros</value>
+            <value>dirbuster</value>
+            <value>pangolin</value>
+            <value>nmap nse</value>
+            <value>sqlninja</value>
+            <value>nikto</value>
+            <value>webinspect</value>
+            <value>blackwidow</value>
+            <value>grendel-scan</value>
+            <value>havij</value>
+            <value>w3af</value>
+            <value>hydra</value>
         </blackList>
     </userAgent>
     <rules>
         <rule>
             <id>301</id>
             <name>java code injection</name>
-            <regex>.</regex>
+            <regex>(exec)</regex>
             <hdfsPath>/user/root/mofan/301</hdfsPath>
+        </rule>
+        <rule>
+            <id>302</id>
+            <name>read file</name>
+            <regex>(passwd|etc|windows)</regex>
+            <hdfsPath>/user/root/mofan/302</hdfsPath>
         </rule>
         <rule>
             <id>303</id>
@@ -19,6 +58,27 @@
                 <count>10</count>
                 <seconds>180</seconds>
             </threshold>
+            <hdfsPath>/user/root/mofan/303</hdfsPath>
+        </rule>
+        <rule>
+            <id>304</id>
+            <name>file detection</name>
+            <regex>(asp|aspx|php|jsp|ini|bak|zip|rar|gz|xml|config|sql|csv|asmx)</regex>
+            <threshold>
+                <count>5</count>
+                <seconds>300</seconds>
+            </threshold>
+            <hdfsPath>/user/root/mofan/304</hdfsPath>
+        </rule>
+        <rule>
+            <id>305</id>
+            <name>directory detection</name>
+            <regex>(admin|manager|phmyadmin|filemanager|fckeditor|editor|system|data|backup|ftp|bak|edit)</regex>
+            <threshold>
+                <count>5</count>
+                <seconds>300</seconds>
+            </threshold>
+            <hdfsPath>/user/root/mofan/305</hdfsPath>
         </rule>
     </rules>
 </scanDetectionModel>

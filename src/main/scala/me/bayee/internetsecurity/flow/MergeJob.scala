@@ -14,11 +14,11 @@ import scala.xml.XML
 object MergeJob extends App {
   override def main(args: Array[String]): Unit = {
     val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("merge_job.xml"))
-    val conf = new SparkConf().setAppName("test").setMaster("local[8]")
+    val conf = new SparkConf()
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
 
-    (xml \ "inputs" \ "input").foldLeft[(RDD[(String, (ModelInput, List[String]))])](null) { (rdd, node) =>
+    val pipe = (xml \ "inputs" \ "input").foldLeft[(RDD[(String, (ModelInput, List[String]))])](null) { (rdd, node) =>
       val pipe = sc.sequenceFile[String, String]((node \ "hdfsPath").text).map(kv => (kv._1, ModelInput.fromModelInput(kv._2)))
       if (rdd == null) pipe.map(kv => (kv._1, (kv._2._1, List(kv._2._2))))
       else rdd.fullOuterJoin(pipe).map {
@@ -27,6 +27,8 @@ object MergeJob extends App {
         case (key, (Some(v1), None)) => (key, v1)
       }
     }
+
+    pipe
       .foreachPartition { iter =>
         val conf = HBaseConfiguration.create()
         conf.set("hbase.zookeeper.property.clientPort", "2181")
@@ -53,5 +55,6 @@ object MergeJob extends App {
         }
         table.close
       }
+
   }
 }

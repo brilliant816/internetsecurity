@@ -63,7 +63,7 @@ object ScanDetectionModel extends App {
 
         case "304" | "305" => //敏感文件探测规则 | 敏感目录探测规则
           base
-            .map(mi => ((node \ "suffix" \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).getOrElse(""), mi))
+            .map(mi => ((node \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).getOrElse(""), mi))
             .filter(_._1.nonEmpty)
             .groupByKey()
             .mapPartitions { iter =>
