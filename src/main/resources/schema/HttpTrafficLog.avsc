@@ -1,0 +1,80 @@
+{
+  "type": "record",
+  "name": "HttpTrafficLog",
+  "namespace": "schema",
+  "fields": [
+    {
+      "name": "visit_time",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "warden",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "http_code",
+      "type": [ "null", "int" ],
+      "default": null
+    }, {
+      "name": "client_c_address",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "server_ip",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "refer_info",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "server_port",
+      "type": [ "null", "int" ],
+      "default": null
+    }, {
+      "name": "client_request_size",
+      "type": [ "null", "long" ],
+      "default": null
+    }, {
+      "name": "server_response_size",
+      "type": [ "null", "long" ],
+      "default": null
+    }, {
+      "name": "dns",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "cookie",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "client_ip",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "user_agent",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "uri",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "query_param",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "http_method",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "server_c_address",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "httplog",
+      "type": [ "null", "string" ],
+      "default": null
+    }
+  ]
+}

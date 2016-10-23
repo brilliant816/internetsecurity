@@ -1,17 +1,17 @@
 <attactDetectionModel>
-    <input>/user/root/mofan/test.dat</input>
+    <input>/user/root/mofan/input/1010.avro</input>
     <rules>
         <rule>
             <id>201</id>
             <name>sql inject</name>
-            <regex>(select|drop)</regex>
+            <regex>(select|drop|AND|ORDER BY|UNION|SELECT|Submit=Submit)</regex>
             <hdfsPath>/user/root/mofan/201</hdfsPath>
         </rule>
-        <rule>
-            <id>202</id>
-            <name>xss</name>
-            <regex>(applet)</regex>
-            <hdfsPath>/user/root/mofan/202</hdfsPath>
-        </rule>
+        <!--<rule>-->
+            <!--<id>202</id>-->
+            <!--<name>xss</name>-->
+            <!--<regex>(applet)</regex>-->
+            <!--<hdfsPath>/user/root/mofan/202</hdfsPath>-->
+        <!--</rule>-->
     </rules>
 </attactDetectionModel>

@@ -1,7 +1,14 @@
 package me.bayee.internetsecurity.model
 
-import me.bayee.internetsecurity.pojo.ModelInput
+import java.net.URLDecoder
+
+import me.bayee.internetsecurity.pojo.{HttpTrafficLog, ModelInput}
+import org.apache.avro.generic.GenericRecord
+import org.apache.avro.mapred.AvroKey
+import org.apache.avro.mapreduce.AvroKeyInputFormat
+import org.apache.hadoop.io.NullWritable
 import org.apache.spark.{SparkConf, SparkContext}
+import spray.json._
 
 import scala.xml.XML
 
@@ -16,16 +23,31 @@ object AttactDetectionModel extends App {
     val sc = new SparkContext(conf)
 
     val input = sc
-      .textFile((xml \ "input").text)
-      .map(ModelInput.fromHttpTrafficLog)
+      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
+
+    //tmp
+    input.map(_.toString).saveAsTextFile("/user/root/mofan/csv")
 
     // start the model
-    val base = input.filter(_.httpCode.getOrElse(-1) == 200)
+    val base = input.filter(_.http_code.getOrElse(-1) == 200)
 
     (xml \ "rules" \ "rule").foreach { node =>
-      base.filter(mi => (node \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).isDefined)
-        .map(_.toKeyValueWithId((node \ "id").text))
-        .saveAsSequenceFile((node \ "hdfsPath").text)
+      base.filter { htl =>
+        val split = htl.uri.getOrElse("").split("\\?")
+        val getParam = if (split.size > 1) split.drop(1).mkString("?") else ""
+        (node \ "regex").text.r.findFirstIn(URLDecoder.decode(getParam, "utf-8")).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("")).isDefined
+      }
+//        (node \ "regex").text.r.findFirstIn(URLDecoder.decode(getParam, "utf-8")).isDefined)
+//          || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("")).isDefined)}
+        .map(_.toString)
+        .saveAsTextFile((node \ "hdfsPath").text)
+      //        .map(_.toKeyValueWithId((node \ "id").text))
+      //        .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }
+}
+
+object Te extends App {
+  println("haha?ha".split("\\?").drop(1).mkString("?"))
 }
