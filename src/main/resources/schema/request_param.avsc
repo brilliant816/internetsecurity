@@ -1,0 +1,16 @@
+{
+  "type": "record"
+  "name": "RequestParam",
+  "namespace": "schema",
+  "fields": [
+    {
+      "name": "param_key",
+      "type": [ "null", "string" ],
+      "default": null
+    }, {
+      "name": "param_value",
+      "type": [ "null", "string" ],
+      "default": null
+    }
+  ]
+}

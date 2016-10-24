@@ -26,9 +26,6 @@ object AttactDetectionModel extends App {
       .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
 
-    //tmp
-    input.map(_.toString).saveAsTextFile("/user/root/mofan/csv")
-
     // start the model
     val base = input.filter(_.http_code.getOrElse(-1) == 200)
 
@@ -46,8 +43,4 @@ object AttactDetectionModel extends App {
       //        .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }
-}
-
-object Te extends App {
-  println("haha?ha".split("\\?").drop(1).mkString("?"))
 }
