@@ -35,12 +35,8 @@ object AttactDetectionModel extends App {
         val getParam = if (split.size > 1) split.drop(1).mkString("?") else ""
         (node \ "regex").text.r.findFirstIn(URLDecoder.decode(getParam, "utf-8")).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("")).isDefined
       }
-//        (node \ "regex").text.r.findFirstIn(URLDecoder.decode(getParam, "utf-8")).isDefined)
-//          || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("")).isDefined)}
-        .map(_.toString)
-        .saveAsTextFile((node \ "hdfsPath").text)
-      //        .map(_.toKeyValueWithId((node \ "id").text))
-      //        .saveAsSequenceFile((node \ "hdfsPath").text)
+        .map(_.toModelInput.toKeyValueWithId((xml \ "id").text))
+        .saveAsSequenceFile((xml \ "hdfsPath").text)
     }
   }
 }

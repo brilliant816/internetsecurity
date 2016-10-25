@@ -13,9 +13,7 @@ case class ModelInput(visitTime: Option[String],
                       referInfo: Option[String],
                       httpMethod: Option[String],
                       userAgent: Option[String],
-                      cookie: Option[String],
-                      clientRequestSize: Option[Long],
-                      serverResponseSize: Option[Long]
+                      cookie: Option[String]
                      ) {
   def toKeyValueWithId(id: String) = {
     val line = "\"" + this.productIterator.map(_.asInstanceOf[Option[_ >: Any]].getOrElse("")).mkString("\",\"") + "\""
@@ -45,8 +43,6 @@ object ModelInput {
       split(15),
       split(12),
       split(10),
-      split(7),
-      split(8)
     )
   }
 
@@ -61,9 +57,7 @@ object ModelInput {
       split(5),
       split(6),
       split(7),
-      split(8),
-      split(9),
-      split(10)
-    ), split(11))
+      split(8)
+    ), split(9))
   }
 }

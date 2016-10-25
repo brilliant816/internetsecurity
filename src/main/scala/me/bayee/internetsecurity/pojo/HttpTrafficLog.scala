@@ -28,4 +28,6 @@ case class HttpTrafficLog(visit_time: Option[String],
                           server_c_address: Option[String],
                           httplog: Option[String]) {
   override def toString: String = "\"" + this.productIterator.map(_.asInstanceOf[Option[_ >: Any]].getOrElse("")).mkString("\",\"") + "\""
+
+  def toModelInput: ModelInput = ModelInput(visit_time, client_ip, server_ip, uri, http_code, refer_info, http_method, user_agent, cookie)
 }
