@@ -34,8 +34,9 @@ object RModel extends App {
         val uri = URLDecoder.decode(htl.uri.getOrElse(""), "utf-8")
         val index1 = uri.indexOf("?")
         val index2 = uri.indexOf("/")
-        val cut = if (index1 < index2) index1 else index2
-        val dns = uri.substring(0, cut)
+        val dns = if (index1 < index2 && index1 > 0) uri.substring(0, index1)
+        else if (index2 > 0) uri.substring(0, index2)
+        else uri
         val getParams: List[(String, String)] = if (index1 < 0) List.empty[(String, String)]
         else uri.substring(index1 + 1).split("&").map { kv =>
           val s = kv.split("=")
@@ -43,7 +44,7 @@ object RModel extends App {
         }.toList
         val postParams: List[(String, String)] = if (htl.query_param.isDefined) htl.query_param.get.split("&").map { kv =>
           val s = kv.split("=")
-          (s(0), s(1))
+          if (s.size == 1) (kv, "") else (s(0), s(1))
         }.toList
         else List.empty[(String, String)]
         (dns, getParams ::: postParams)
@@ -67,8 +68,9 @@ object RModel extends App {
     dnsList.foreach { d =>
       tuple2.filter(_._1 == d)
         .flatMap(_._2.toList)
-        .map(kv => (new AvroKey(RequestParam(kv._1, kv._2).toJson.asJsObject.convert2GenericRecord(RequestParam.key, RequestParam.schemaMap)), null))
-        .saveAsNewAPIHadoopFile((xml \ "output").text, classOf[GenericRecord], classOf[NullWritable], classOf[AvroKeyOutputFormat[GenericRecord]], job.getConfiguration)
+        .map(kv => (new AvroKey(RequestParam(kv._1, kv._2).toJson.asJsObject.convert2GenericRecord(RequestParam.key, RequestParam.schemaMap)), null)._1)
+        .saveAsTextFile((xml \ "hdfsPath").text + s"/dns_${d.replace(".","_").replace(":","_")}")
+      //        .saveAsNewAPIHadoopFile((xml \ "output").text, classOf[GenericRecord], classOf[NullWritable], classOf[AvroKeyOutputFormat[GenericRecord]], job.getConfiguration)
 
     }
   }

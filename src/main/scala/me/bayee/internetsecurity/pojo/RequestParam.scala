@@ -14,3 +14,7 @@ object RequestParam extends DefaultJsonProtocol with BasicPojo{
 }
 
 case class RequestParam(param_key: String, param_value: String)
+
+object Te extends App {
+  RequestParam.schema
+}

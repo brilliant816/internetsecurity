@@ -42,7 +42,7 @@ object ModelInput {
       split(5),
       split(15),
       split(12),
-      split(10),
+      split(10)
     )
   }
 

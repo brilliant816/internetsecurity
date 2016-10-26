@@ -50,8 +50,6 @@ object MergeJob extends App {
                 put.addColumn("cf".getBytes, "httpMethod".getBytes, mi.httpMethod.getOrElse("").getBytes)
                 put.addColumn("cf".getBytes, "userAgent".getBytes, mi.userAgent.getOrElse("").getBytes)
                 put.addColumn("cf".getBytes, "cookie".getBytes, mi.cookie.getOrElse("").getBytes)
-                put.addColumn("cf".getBytes, "clientRequestSize".getBytes, mi.clientRequestSize.getOrElse(-1).toString.getBytes)
-                put.addColumn("cf".getBytes, "serverResponseSize".getBytes, mi.serverResponseSize.getOrElse(-1).toString.getBytes)
                 put.addColumn("cf".getBytes, "ids".getBytes, ids.mkString(",").getBytes)
                 table.put(put)
             }

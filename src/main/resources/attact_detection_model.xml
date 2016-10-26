@@ -7,11 +7,11 @@
             <regex>(select|drop|AND|ORDER BY|UNION|SELECT|Submit=Submit)</regex>
             <hdfsPath>/user/root/mofan/201</hdfsPath>
         </rule>
-        <!--<rule>-->
-            <!--<id>202</id>-->
-            <!--<name>xss</name>-->
-            <!--<regex>(applet)</regex>-->
-            <!--<hdfsPath>/user/root/mofan/202</hdfsPath>-->
-        <!--</rule>-->
+        <rule>
+            <id>202</id>
+            <name>xss</name>
+            <regex>(script|link|meta|object|iframe|body)</regex>
+            <hdfsPath>/user/root/mofan/202</hdfsPath>
+        </rule>
     </rules>
 </attactDetectionModel>
