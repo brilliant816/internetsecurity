@@ -1,8 +1,13 @@
 {
   "type": "record",
-  "name": "RequestParam",
+  "name": "RModelParam",
   "namespace": "schema",
   "fields": [
+    {
+      "name": "table_name",
+      "type": [ "null", "string" ],
+      "default": null
+    },
     {
       "name": "param_key",
       "type": [ "null", "string" ],
