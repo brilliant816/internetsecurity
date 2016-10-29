@@ -1,5 +1,5 @@
 <graphDetectionModel>
-    <input>/user/root/mofan/test.dat</input>
+    <input>/user/root/mofan/input</input>
     <rules>
         <rule>
             <id>101</id>

@@ -1,15 +1,13 @@
 package me.bayee.internetsecurity.model
 
-import java.net.URLDecoder
-
-import me.bayee.internetsecurity.pojo.{HttpTrafficLog, ModelInput}
+import me.bayee.internetsecurity.pojo.HttpTrafficLog
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyInputFormat
 import org.apache.hadoop.io.NullWritable
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
-
+import me.bayee.internetsecurity.util.StringUtil._
 import scala.xml.XML
 
 /**
@@ -31,12 +29,10 @@ object AttactDetectionModel extends App {
 
     (xml \ "rules" \ "rule").foreach { node =>
       base.filter { htl =>
-        val split = htl.uri.getOrElse("").split("\\?")
-        val getParam = if (split.size > 1) split.drop(1).mkString("?") else ""
-        (node \ "regex").text.r.findFirstIn(URLDecoder.decode(getParam, "utf-8")).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("")).isDefined
+        (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode.urlDecode.getParamString).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined
       }
         .map(_.toModelInput.toKeyValueWithId((xml \ "id").text))
-        .saveAsSequenceFile((xml \ "hdfsPath").text)
+        .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }
 }

@@ -1,5 +1,5 @@
 <attactDetectionModel>
-    <input>/user/root/mofan/input/1010.avro</input>
+    <input>/user/root/mofan/input</input>
     <rules>
         <rule>
             <id>201</id>

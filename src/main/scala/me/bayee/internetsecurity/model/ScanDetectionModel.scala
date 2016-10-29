@@ -3,8 +3,14 @@ package me.bayee.internetsecurity.model
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import me.bayee.internetsecurity.pojo. ModelInput
+import me.bayee.internetsecurity.util.StringUtil._
+import me.bayee.internetsecurity.pojo.{HttpTrafficLog, ModelInput}
+import org.apache.avro.generic.GenericRecord
+import org.apache.avro.mapred.AvroKey
+import org.apache.avro.mapreduce.AvroKeyInputFormat
+import org.apache.hadoop.io.NullWritable
 import org.apache.spark.{SparkConf, SparkContext}
+import spray.json._
 
 import scala.xml.XML
 
@@ -19,29 +25,30 @@ object ScanDetectionModel extends App {
     val sc = new SparkContext(conf)
 
     val input = sc
-      .textFile((xml \ "input").text)
-      .map(ModelInput.fromHttpTrafficLog)
+      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
 
     // useragent feature
     val blackList: List[String] = (xml \ "userAgent" \ "blackList" \ "value").map(_.text).toList
     val base = input
-      .filter(mi => blackList.foldLeft(false) { (last, value) => last match {
+      .filter(htl => blackList.foldLeft(false) { (last, value) => last match {
         case true => true
-        case false => mi.userAgent.getOrElse("").contains(value)
+        case false => htl.user_agent.getOrElse("").contains(value)
       }
       })
 
     (xml \ "rules" \ "rule").foreach { node =>
       (node \ "id").text match {
         case "301" | "302" => //java代码注入 | 任意文件读取
-          base.filter(mi => (node \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).isDefined)
-            .map(_.toKeyValueWithId((node \ "id").text))
+          base.filter{htl =>
+            (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode.urlDecode.getParamString).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined}
+            .map(_.toModelInput.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "303" => // 404阀值规则
           base
-            .filter(_.httpCode.getOrElse(-1) == 404)
-            .map(mi => (mi.url.getOrElse(""), mi))
+            .filter(_.http_code.getOrElse(-1) == 404)
+            .map(htl => (htl.uri.getOrElse("").base64Decode.getUrl, htl))
             .groupByKey()
             .mapPartitions { iter =>
               val sdf = new SimpleDateFormat(ModelInput.DATE_FORMAT)
@@ -50,7 +57,7 @@ object ScanDetectionModel extends App {
                 if (list.size <= (node \ "threshold" \ "count").text.toInt) (list, -1)
                 else {
                   val dateList = list
-                    .map(mi => (sdf.parse(mi.visitTime.get), mi))
+                    .map(htl => (sdf.parse(htl.visit_time.get), htl))
                     .sortWith((a, b) => a._1.before(b._1))
                   val count = rollingTimeMaxCount(dateList, (node \ "threshold" \ "seconds").text.toInt)
                   (list, count)
@@ -58,12 +65,12 @@ object ScanDetectionModel extends App {
               }
             }
             .filter(_._2 > (node \ "threshold" \ "count").text.toInt)
-            .flatMap(_._1.map(_.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_._1.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "304" | "305" => //敏感文件探测规则 | 敏感目录探测规则
           base
-            .map(mi => ((node \ "regex").text.r.findFirstIn(mi.url.getOrElse("")).getOrElse(""), mi))
+            .map(htl => ((node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode).getOrElse(""), htl))
             .filter(_._1.nonEmpty)
             .groupByKey()
             .mapPartitions { iter =>
@@ -73,7 +80,7 @@ object ScanDetectionModel extends App {
                 if (list.size <= (node \ "threshold" \ "count").text.toInt) (list, -1)
                 else {
                   val dateList = list
-                    .map(mi => (sdf.parse(mi.visitTime.get), mi))
+                    .map(htl => (sdf.parse(htl.visit_time.get), htl))
                     .sortWith((a, b) => a._1.before(b._1))
                   val count = rollingTimeMaxCount(dateList, (node \ "threshold" \ "seconds").text.toInt)
                   (list, count)
@@ -81,13 +88,13 @@ object ScanDetectionModel extends App {
               }
             }
             .filter(_._2 > (node \ "threshold" \ "count").text.toInt)
-            .flatMap(_._1.map(_.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_._1.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
             .saveAsSequenceFile((node \ "hdfsPath").text)
       }
     }
   }
 
-  def rollingTimeMaxCount(list: List[(Date, ModelInput)], seconds: Int): Int =
+  def rollingTimeMaxCount(list: List[(Date, HttpTrafficLog)], seconds: Int): Int =
     if (list.isEmpty) 0
     else {
       val calendar = Calendar.getInstance

@@ -1,5 +1,5 @@
 <scanDetectionModel>
-    <input>/user/root/mofan/test.dat</input>
+    <input>/user/root/mofan/input</input>
     <userAgent>
         <blackList>
             <value>appscan</value>
