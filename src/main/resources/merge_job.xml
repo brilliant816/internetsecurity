@@ -16,4 +16,73 @@
             <hdfsPath>/user/root/mofan/106</hdfsPath>
         </input>
     </inputs>
+
+    <group>
+        <record>
+            <id>401</id>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>402</id>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>403</id>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>404</id>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>405</id>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>406</id>
+            <weight>5</weight>
+        </record>
+        <lowBound>5</lowBound>
+    </group>
+
+    <names>
+        <record>
+            <id>101</id>
+            <name>phpspy规则</name>
+            <weight>1</weight>
+        </record>
+        <record>
+            <id>103</id>
+            <name>基于文件路径的特征</name>
+            <weight>3</weight>
+        </record>
+        <record>
+            <id>104</id>
+            <name>iis6检测方式</name>
+            <weight>4</weight>
+        </record>
+        <record>
+            <id>105</id>
+            <name>apache检测方式</name>
+            <weight>5</weight>
+        </record>
+        <record>
+            <id>106</id>
+            <name>nginx解析漏洞检测方式</name>
+            <weight>6</weight>
+        </record>
+        <record>
+            <id>201</id>
+            <name>sql注入攻击</name>
+            <weight>7</weight>
+        </record>
+        <record>
+            <id>202</id>
+            <name>xss攻击检测</name>
+            <weight>8</weight>
+        </record>
+        <record>
+            <id>301</id>
+        </record>
+    </names>
 </mergeJob>
