@@ -1,4 +1,18 @@
 <mergeJob>
+    <hbase>
+        <zookeeper>
+            <property>
+                <clientPort>2181</clientPort>
+            </property>
+            <quorum>192.168.0.229</quorum>
+        </zookeeper>
+        <master>192.168.0.229:600000</master>
+    </hbase>
+    <mysql>
+        <host>jdbc:mysql://192.168.0.226/test</host>
+        <username>root</username>
+        <password>pass0rd</password>
+    </mysql>
     <inputs>
         <input>
             <hdfsPath>/user/root/mofan/101</hdfsPath>
@@ -50,39 +64,109 @@
             <id>101</id>
             <name>phpspy规则</name>
             <weight>1</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>103</id>
             <name>基于文件路径的特征</name>
             <weight>3</weight>
+            <threatLevel>2</threatLevel>
         </record>
         <record>
             <id>104</id>
             <name>iis6检测方式</name>
             <weight>4</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>105</id>
             <name>apache检测方式</name>
             <weight>5</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>106</id>
             <name>nginx解析漏洞检测方式</name>
             <weight>6</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>201</id>
             <name>sql注入攻击</name>
             <weight>7</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>202</id>
             <name>xss攻击检测</name>
             <weight>8</weight>
+            <threatLevel>1</threatLevel>
         </record>
         <record>
             <id>301</id>
+            <name>java代码注入</name>
+            <weight>9</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>302</id>
+            <name>任意文件读取</name>
+            <weight>10</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>303</id>
+            <name>404阀值规则</name>
+            <weight>11</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>304</id>
+            <name>敏感文件探测规则</name>
+            <weight>12</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>305</id>
+            <name>敏感目录探测规则</name>
+            <weight>13</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>401</id>
+            <name>伪造搜索引擎</name>
+            <weight>14</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>402</id>
+            <name>高频规则</name>
+            <weight>15</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>403</id>
+            <name>页面比例规则</name>
+            <weight>16</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>404</id>
+            <name>useragent特征规则</name>
+            <weight>17</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>405</id>
+            <name>http请求包大小规则</name>
+            <weight>18</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>406</id>
+            <name>静态文件比例规则</name>
+            <weight>19</weight>
+            <threatLevel>1</threatLevel>
         </record>
     </names>
 </mergeJob>

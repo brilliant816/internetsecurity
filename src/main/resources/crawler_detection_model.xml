@@ -2,66 +2,66 @@
     <input>/user/root/mofan/input</input>
     <rules>
         <!--<rule>-->
-            <!--<id>401</id>-->
-            <!--<name>dns name detection</name>-->
-            <!--<regex>(baidu|google|yahoo|bing|msn)</regex>-->
-            <!--<hdfsPath>/user/root/mofan/401</hdfsPath>-->
+        <!--<id>401</id>-->
+        <!--<name>dns name detection</name>-->
+        <!--<regex>(baidu|google|yahoo|bing|msn)</regex>-->
+        <!--<hdfsPath>/user/root/mofan/401</hdfsPath>-->
         <!--</rule>-->
         <!--<rule>-->
-            <!--<id>402</id>-->
-            <!--<name>frequency detection</name>-->
-            <!--<global>-->
-                <!--<count>1000</count>-->
-                <!--<seconds>300</seconds>-->
-            <!--</global>-->
-            <!--<urls>-->
-                <!--<element>-->
-                    <!--<url>baidu.com</url>-->
-                    <!--<seconds>300</seconds>-->
-                    <!--<count>400</count>-->
-                <!--</element>-->
-            <!--</urls>-->
-            <!--<hdfsPath>/user/root/mofan/402</hdfsPath>-->
+        <!--<id>402</id>-->
+        <!--<name>frequency detection</name>-->
+        <!--<global>-->
+        <!--<count>1000</count>-->
+        <!--<seconds>300</seconds>-->
+        <!--</global>-->
+        <!--<urls>-->
+        <!--<element>-->
+        <!--<url>baidu.com</url>-->
+        <!--<seconds>300</seconds>-->
+        <!--<count>400</count>-->
+        <!--</element>-->
+        <!--</urls>-->
+        <!--<hdfsPath>/user/root/mofan/402</hdfsPath>-->
         <!--</rule>-->
-        <rule>
-            <id>403</id>
-            <name>page percent detection</name>
-            <global>
-                <seconds>300</seconds>
-                <upBound>100</upBound>
-                <lowBound>10</lowBound>
-            </global>
-            <urls>
-                <element>
-                    <url>baidu.com</url>
-                    <seconds>300</seconds>
-                    <percent>0.5</percent>
-                </element>
-            </urls>
-            <hdfsPath>/user/root/mofan/403</hdfsPath>
-        </rule>
+        <!--<rule>-->
+        <!--<id>403</id>-->
+        <!--<name>page percent detection</name>-->
+        <!--<global>-->
+        <!--<seconds>300</seconds>-->
+        <!--<upBound>100</upBound>-->
+        <!--<lowBound>10</lowBound>-->
+        <!--</global>-->
+        <!--<urls>-->
+        <!--<element>-->
+        <!--<url>baidu.com</url>-->
+        <!--<seconds>300</seconds>-->
+        <!--<percent>0.5</percent>-->
+        <!--</element>-->
+        <!--</urls>-->
+        <!--<hdfsPath>/user/root/mofan/403</hdfsPath>-->
+        <!--</rule>-->
         <!--<rule>-->
             <!--<id>404</id>-->
             <!--<name>useragent feature</name>-->
             <!--<regex>(Python-urllib|WinHttp|php|java|httpclient)</regex>-->
             <!--<hdfsPath>/user/root/mofan/404</hdfsPath>-->
         <!--</rule>-->
+        <rule>
+            <id>405</id>
+            <name>http request size</name>
+            <seconds>300</seconds>
+            <requestSize>600</requestSize>
+            <requestCount>300</requestCount>
+            <hdfsPath>/user/root/mofan/405</hdfsPath>
+        </rule>
         <!--<rule>-->
-            <!--<id>405</id>-->
-            <!--<name>http request size</name>-->
-            <!--<seconds>300</seconds>-->
-            <!--<requestSize>600</requestSize>-->
-            <!--<requestCount>300</requestCount>-->
-            <!--<hdfsPath>/user/root/mofan/405</hdfsPath>-->
-        <!--</rule>-->
-        <!--<rule>-->
-            <!--<id>406</id>-->
-            <!--<name>static file percent</name>-->
-            <!--<regex>(gip|css|js)</regex>-->
-            <!--<seconds>300</seconds>-->
-            <!--<matchCount>3</matchCount>-->
-            <!--<totalCount>500</totalCount>-->
-            <!--<hdfsPath>/user/root/mofan/406</hdfsPath>-->
+        <!--<id>406</id>-->
+        <!--<name>static file percent</name>-->
+        <!--<regex>(gip|css|js)</regex>-->
+        <!--<seconds>300</seconds>-->
+        <!--<matchCount>3</matchCount>-->
+        <!--<totalCount>500</totalCount>-->
+        <!--<hdfsPath>/user/root/mofan/406</hdfsPath>-->
         <!--</rule>-->
     </rules>
 </crawlerDetectionModel>

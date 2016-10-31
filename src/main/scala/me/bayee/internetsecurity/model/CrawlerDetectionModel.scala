@@ -157,20 +157,38 @@ object CrawlerDetectionModel extends App {
 
   def rollingTimeRequestSizeThreshold(list: List[(Date, HttpTrafficLog)], seconds: Int, requestSize: Int, requestCount: Int): List[HttpTrafficLog] =
     if (list.isEmpty) List.empty[HttpTrafficLog]
+    else if (list.size <= requestCount) List.empty[HttpTrafficLog]
     else {
-      val result = rollingTimeRequestSizeThreshold(list.tail, seconds, requestSize, requestCount)
-      if (result.nonEmpty) result
-      else {
-        val calender = Calendar.getInstance()
-        calender.setTime(list.head._1)
-        calender.add(Calendar.SECOND, seconds)
-        val endDate = calender.getTime
-        val subList = list.takeWhile(_._1.before(endDate))
+      var _list = list
+      var result = List.empty[HttpTrafficLog]
+      while (_list.size > requestCount && result.isEmpty) {
+        val calendar = Calendar.getInstance()
+        calendar.setTime(_list.head._1)
+        calendar.add(Calendar.SECOND, seconds)
+        val endDate = calendar.getTime
+        val subList = _list.takeWhile(_._1.before(endDate))
         val size = subList.map(_._2.client_request_size.getOrElse[Long](0)).sum
-        if (size < requestSize && subList.size > requestCount) subList.map(_._2)
-        else List.empty[HttpTrafficLog]
+        if (size < requestSize && subList.size > requestCount) result = subList.map(_._2)
+        _list = list.tail
       }
+      result
     }
+
+  //    if (list.isEmpty) List.empty[HttpTrafficLog]
+  //    else {
+  //      val result = rollingTimeRequestSizeThreshold(list.tail, seconds, requestSize, requestCount)
+  //      if (result.nonEmpty) result
+  //      else {
+  //        val calender = Calendar.getInstance()
+  //        calender.setTime(list.head._1)
+  //        calender.add(Calendar.SECOND, seconds)
+  //        val endDate = calender.getTime
+  //        val subList = list.takeWhile(_._1.before(endDate))
+  //        val size = subList.map(_._2.client_request_size.getOrElse[Long](0)).sum
+  //        if (size < requestSize && subList.size > requestCount) subList.map(_._2)
+  //        else List.empty[HttpTrafficLog]
+  //      }
+  //    }
 
   def rollingTimeUrlThreshold(list: List[(Date, HttpTrafficLog)], url: String, seconds: Int, percent: Double): List[HttpTrafficLog] =
     if (list.isEmpty) List.empty[HttpTrafficLog]
@@ -193,18 +211,20 @@ object CrawlerDetectionModel extends App {
     if (list.isEmpty) List.empty[HttpTrafficLog]
     else if (list.size <= upBound) List.empty[HttpTrafficLog]
     else {
-      val result = rollingTimeThreshold(list.tail, seconds, upBound, lowBound)
-      if (result.nonEmpty) result
-      else {
+      var _list = list
+      var result = List.empty[HttpTrafficLog]
+      while (result.isEmpty && _list.size > upBound) {
         val calender = Calendar.getInstance()
-        calender.setTime(list.head._1)
+        calender.setTime(_list.head._1)
         calender.add(Calendar.SECOND, seconds)
         val endDate = calender.getTime
-        val subList = list.takeWhile(_._1.before(endDate))
+        val subList = _list.takeWhile(_._1.before(endDate))
         val up = subList.size
         val low = subList.map(_._2.uri.getOrElse("").base64Decode.getUrl).distinct.size
-        if (up > upBound && low < lowBound) subList.map(_._2) else List.empty[HttpTrafficLog]
+        if (up > upBound && low < lowBound) result = subList.map(_._2)
+        _list = _list.tail
       }
+      result
     }
 
   def rollingTimeMaxCount(list: List[(Date, HttpTrafficLog)], seconds: Int): Int =
@@ -212,13 +232,13 @@ object CrawlerDetectionModel extends App {
     else {
       var _list = list
       var max = -1
-      while(_list.nonEmpty && _list.size > max) {
+      while (_list.nonEmpty && _list.size > max) {
         val calendar = Calendar.getInstance
-        calendar.setTime(list.head._1)
+        calendar.setTime(_list.head._1)
         calendar.add(Calendar.SECOND, seconds)
         val endDate = calendar.getTime
         val count = list.lastIndexWhere(_._1.before(endDate)) + 1
-        if(max < count) max = count
+        if (max < count) max = count
         _list = _list.tail
       }
       max
