@@ -141,18 +141,19 @@ object CrawlerDetectionModel extends App {
     if (list.isEmpty) List.empty[HttpTrafficLog]
     else if (list.size <= totalCount) List.empty[HttpTrafficLog]
     else {
-      val result = rollingTimeRegexThreshold(list.tail, regex, seconds, matchCount, totalCount)
-      if (result.nonEmpty) result
-      else {
-        val calender = Calendar.getInstance()
-        calender.setTime(list.head._1)
-        calender.add(Calendar.SECOND, seconds)
-        val endDate = calender.getTime
-        val subList = list.takeWhile(_._1.before(endDate))
+      var _list = list
+      var result = List.empty[HttpTrafficLog]
+      while (_list.size > totalCount && result.isEmpty) {
+        val calendar = Calendar.getInstance()
+        calendar.setTime(_list.head._1)
+        calendar.add(Calendar.SECOND, seconds)
+        val endDate = calendar.getTime
+        val subList = _list.takeWhile(_._1.before(endDate))
         val count = subList.count(htl => regex.findFirstIn(htl._2.uri.getOrElse("").base64Decode.urlDecode).isDefined)
-        if (count < matchCount && subList.size > totalCount) subList.map(_._2)
-        else List.empty[HttpTrafficLog]
+        if (count < matchCount && subList.size > totalCount) result = subList.map(_._2)
+        _list = _list.tail
       }
+      result
     }
 
   def rollingTimeRequestSizeThreshold(list: List[(Date, HttpTrafficLog)], seconds: Int, requestSize: Int, requestCount: Int): List[HttpTrafficLog] =
@@ -169,26 +170,10 @@ object CrawlerDetectionModel extends App {
         val subList = _list.takeWhile(_._1.before(endDate))
         val size = subList.map(_._2.client_request_size.getOrElse[Long](0)).sum
         if (size < requestSize && subList.size > requestCount) result = subList.map(_._2)
-        _list = list.tail
+        _list = _list.tail
       }
       result
     }
-
-  //    if (list.isEmpty) List.empty[HttpTrafficLog]
-  //    else {
-  //      val result = rollingTimeRequestSizeThreshold(list.tail, seconds, requestSize, requestCount)
-  //      if (result.nonEmpty) result
-  //      else {
-  //        val calender = Calendar.getInstance()
-  //        calender.setTime(list.head._1)
-  //        calender.add(Calendar.SECOND, seconds)
-  //        val endDate = calender.getTime
-  //        val subList = list.takeWhile(_._1.before(endDate))
-  //        val size = subList.map(_._2.client_request_size.getOrElse[Long](0)).sum
-  //        if (size < requestSize && subList.size > requestCount) subList.map(_._2)
-  //        else List.empty[HttpTrafficLog]
-  //      }
-  //    }
 
   def rollingTimeUrlThreshold(list: List[(Date, HttpTrafficLog)], url: String, seconds: Int, percent: Double): List[HttpTrafficLog] =
     if (list.isEmpty) List.empty[HttpTrafficLog]
@@ -237,7 +222,7 @@ object CrawlerDetectionModel extends App {
         calendar.setTime(_list.head._1)
         calendar.add(Calendar.SECOND, seconds)
         val endDate = calendar.getTime
-        val count = list.lastIndexWhere(_._1.before(endDate)) + 1
+        val count = _list.lastIndexWhere(_._1.before(endDate)) + 1
         if (max < count) max = count
         _list = _list.tail
       }

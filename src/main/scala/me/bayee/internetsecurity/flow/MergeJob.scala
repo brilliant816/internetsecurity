@@ -1,6 +1,7 @@
 package me.bayee.internetsecurity.flow
 
 import java.sql.DriverManager
+import java.util
 
 import me.bayee.internetsecurity.pojo.ModelInput
 import org.apache.hadoop.hbase.HBaseConfiguration
@@ -20,9 +21,15 @@ object MergeJob extends App {
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
 
-    val idWeightMap = (xml \ "group" \ "record").map(node => ((node \ "id").text, (node \ "weight").text.toInt)).toMap
+    val idWeightMap = (xml \ "group" \ "record").map(node => ((node \ "id").text, (node \ "weight").text.toInt)).foldLeft(new util.HashMap[String,Int]()){(last,cur)=>
+      last.put(cur._1,cur._2)
+      last
+    }
 
-    val id2Props = (xml \ "names" \ "record").map(node => ((node \ "id").text, ((node \ "name").text, (node \ "weight").text.toInt, (node \ "threatLevel").text.toInt))).toMap
+    val id2Props = (xml \ "names" \ "record").map(node => ((node \ "id").text, ((node \ "name").text, (node \ "weight").text.toInt, (node \ "threatLevel").text.toInt))).foldLeft(new util.HashMap[String,(String,Int,Int)]()){(last,cur) =>
+      last.put(cur._1,cur._2)
+      last
+    }
 
     val pipe = (xml \ "inputs" \ "input").foldLeft[(RDD[(String, (ModelInput, List[String]))])](null) { (rdd, node) =>
       val pipe = sc.sequenceFile[String, String]((node \ "hdfsPath").text).map(kv => (kv._1, ModelInput.fromModelInput(kv._2)))
@@ -42,7 +49,7 @@ object MergeJob extends App {
         }
         if (idNotInGroup) (key, (mi, ids, ids))
         else {
-          val totalWeight = ids.foldLeft(0) { (last, cur) => last + idWeightMap(cur) }
+          val totalWeight = ids.foldLeft(0) { (last, cur) => last + idWeightMap.get(cur) }
           if (totalWeight >= (xml \ "group" \ "logBound").text.toInt) (key, (mi, ids, ids))
           else (key, (mi, ids, List.empty[String]))
         }
@@ -52,7 +59,7 @@ object MergeJob extends App {
     pipe
         .map{
           case (key,(mi,ids,_)) =>
-            (mi, ids.map(id => id2Props(id)._1))
+            (mi, ids.map(id => id2Props.get(id)._1))
         }
       .foreachPartition { iter =>
         val conf = HBaseConfiguration.create()
@@ -84,7 +91,7 @@ object MergeJob extends App {
     pipe
         .map{
           case (key, (mi, _,targetIds)) =>
-            val targetId = targetIds.map(id2Props.apply).sortWith(_._2 > _._2).head
+            val targetId = targetIds.map(id2Props.get).sortWith(_._2 > _._2).head
             ((mi.visitTime.getOrElse("").split(" ")(0),targetId._1,mi.url.getOrElse(""),targetId._3),1)
         }
       .reduceByKey(_ + _)
@@ -101,5 +108,20 @@ object MergeJob extends App {
           statement.close()
       }
     connection.close()
+  }
+}
+import scala.collection.JavaConversions._
+object Test extends App {
+  override def main(args: Array[String]): Unit = {
+    val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("merge_job.xml"))
+    val idWeightMap = (xml \ "group" \ "record")
+      .map(node =>
+        ((node \ "id").text, (node \ "weight").text.toInt)
+      )
+      .foldLeft(new util.HashMap[String,Int]()){(last,cur) =>
+        last.put(cur._1,cur._2)
+        last
+      }
+    idWeightMap.foreach(println)
   }
 }

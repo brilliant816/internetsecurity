@@ -29,6 +29,45 @@
         <input>
             <hdfsPath>/user/root/mofan/106</hdfsPath>
         </input>
+        <input>
+            <hdfsPath>/user/root/mofan/201</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/202</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/301</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/302</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/303</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/304</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/305</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/401</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/402</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/403</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/404</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/405</hdfsPath>
+        </input>
+        <input>
+            <hdfsPath>/user/root/mofan/406</hdfsPath>
+        </input>
     </inputs>
 
     <group>
