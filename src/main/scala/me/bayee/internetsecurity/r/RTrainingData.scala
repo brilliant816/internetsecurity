@@ -1,23 +1,24 @@
-package me.bayee.internetsecurity.model
+package me.bayee.internetsecurity.r
 
 import me.bayee.internetsecurity.pojo.{HttpTrafficLog, RModelParam}
+import me.bayee.internetsecurity.util.AvroUtil._
+import me.bayee.internetsecurity.util.StringUtil._
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.{AvroJob, AvroKeyInputFormat, AvroKeyOutputFormat}
 import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.{SparkConf, SparkContext}
 import spray.json._
-import me.bayee.internetsecurity.util.AvroUtil._
-import org.apache.hadoop.mapreduce.Job
-import me.bayee.internetsecurity.util.StringUtil._
+
 import scala.xml.XML
 
 /**
   * Created by mofan on 16-10-24.
   */
-object RModel extends App {
+object RTrainingData extends App {
   override def main(args: Array[String]): Unit = {
-    val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("r_model.xml"))
+    val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("r_training_data.xml"))
     val conf = new SparkConf()
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
@@ -26,7 +27,7 @@ object RModel extends App {
     AvroJob.setOutputKeySchema(job, RModelParam.schema)
 
     sc
-      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .newAPIHadoopFile((xml \ "input").text + args(0), classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
       .map { htl =>
         val uri = htl.uri.getOrElse("").base64Decode.urlDecode

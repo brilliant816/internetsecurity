@@ -25,8 +25,9 @@ object ScanDetectionModel extends App {
     val sc = new SparkContext(conf)
 
     val input = sc
-      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .newAPIHadoopFile((xml \ "input").text + args(0), classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
+      .distinct()
 
     // useragent feature
     val blackList: List[String] = (xml \ "userAgent" \ "blackList" \ "value").map(_.text).toList
@@ -40,9 +41,12 @@ object ScanDetectionModel extends App {
     (xml \ "rules" \ "rule").foreach { node =>
       (node \ "id").text match {
         case "301" | "302" => //java代码注入 | 任意文件读取
-          base.filter{htl =>
-            (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode.urlDecode.getParamString).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined}
-            .map(_.toModelInput.toKeyValueWithId((node \ "id").text))
+          base.filter { htl =>
+            (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode.urlDecode.getParamString).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined
+          }
+            .map(_.toModelInput)
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "303" => // 404阀值规则
@@ -65,7 +69,9 @@ object ScanDetectionModel extends App {
               }
             }
             .filter(_._2 > (node \ "threshold" \ "count").text.toInt)
-            .flatMap(_._1.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_._1.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "304" | "305" => //敏感文件探测规则 | 敏感目录探测规则
@@ -88,7 +94,9 @@ object ScanDetectionModel extends App {
               }
             }
             .filter(_._2 > (node \ "threshold" \ "count").text.toInt)
-            .flatMap(_._1.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_._1.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
       }
     }

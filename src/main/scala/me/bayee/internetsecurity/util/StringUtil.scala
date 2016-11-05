@@ -1,6 +1,7 @@
 package me.bayee.internetsecurity.util
 
 import java.net.URLDecoder
+import java.text.SimpleDateFormat
 
 import sun.misc.BASE64Decoder
 
@@ -57,10 +58,4 @@ case class RichString(str: String) {
     } else str
 
   def urlDecode: String = URLDecoder.decode(str, "utf-8")
-}
-
-object Test extends App {
-
-  import StringUtil._
-
 }

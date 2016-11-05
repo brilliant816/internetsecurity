@@ -27,8 +27,9 @@ object CrawlerDetectionModel extends App {
 
 
     val input = sc
-      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .newAPIHadoopFile((xml \ "input").text + args(0), classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
+      .distinct()
 
     (xml \ "rules" \ "rule").foreach { node =>
       (node \ "id").text match {
@@ -39,7 +40,9 @@ object CrawlerDetectionModel extends App {
               case Some(ip) => (node \ "regex").text.r.findFirstIn(getHostname(ip).toLowerCase).isEmpty
               case None => true
             })
-            .map(_.toModelInput.toKeyValueWithId((node \ "id").text))
+            .map(_.toModelInput)
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
         case "402" => //高频规则
           input
@@ -71,7 +74,9 @@ object CrawlerDetectionModel extends App {
               }
             }
             .filter(_._2 > 0)
-            .flatMap(_._1.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_._1.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
         case "403" => //页面比例规则
           input
@@ -93,13 +98,17 @@ object CrawlerDetectionModel extends App {
               }
             }
             .filter(_.nonEmpty)
-            .flatMap(_.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "404" => //userAgent特征规则
           input
             .filter(htl => (node \ "regex").text.r.findFirstIn(htl.user_agent.getOrElse("")).isDefined)
-            .map(_.toModelInput.toKeyValueWithId((node \ "id").text))
+            .map(_.toModelInput)
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "405" => //http请求包大小规则
@@ -115,7 +124,9 @@ object CrawlerDetectionModel extends App {
               }
             }
             .filter(_.nonEmpty)
-            .flatMap(_.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
 
         case "406" => //静态文件比例规则
@@ -131,7 +142,9 @@ object CrawlerDetectionModel extends App {
               }
             }
             .filter(_.nonEmpty)
-            .flatMap(_.map(_.toModelInput.toKeyValueWithId((node \ "id").text)))
+            .flatMap(_.map(_.toModelInput))
+            .distinct()
+            .map(_.toKeyValueWithId((node \ "id").text))
             .saveAsSequenceFile((node \ "hdfsPath").text)
       }
     }
@@ -169,7 +182,7 @@ object CrawlerDetectionModel extends App {
         val endDate = calendar.getTime
         val subList = _list.takeWhile(_._1.before(endDate))
         val size = subList.map(_._2.client_request_size.getOrElse[Long](0)).sum
-        if (size < requestSize && subList.size > requestCount) result = subList.map(_._2)
+        if (size != 0 && size < requestSize && subList.size > requestCount) result = subList.map(_._2)
         _list = _list.tail
       }
       result
@@ -178,18 +191,19 @@ object CrawlerDetectionModel extends App {
   def rollingTimeUrlThreshold(list: List[(Date, HttpTrafficLog)], url: String, seconds: Int, percent: Double): List[HttpTrafficLog] =
     if (list.isEmpty) List.empty[HttpTrafficLog]
     else {
-      val result = rollingTimeUrlThreshold(list.tail, url, seconds, percent)
-      if (result.nonEmpty) result
-      else {
+      var _list = list
+      var result = List.empty[HttpTrafficLog]
+      while (result.isEmpty && _list.nonEmpty) {
         val calendar = Calendar.getInstance()
-        calendar.setTime(list.head._1)
+        calendar.setTime(_list.head._1)
         calendar.add(Calendar.SECOND, seconds)
         val endDate = calendar.getTime
-        val subList = list.takeWhile(_._1.before(endDate))
+        val subList = _list.takeWhile(_._1.before(endDate))
         val count = subList.count(_._2.uri.getOrElse("").base64Decode.urlDecode.contains(url))
-        if (count.toDouble / subList.size.toDouble > percent) subList.map(_._2)
-        else List.empty[HttpTrafficLog]
+        if (count.toDouble / subList.size.toDouble > percent) result = subList.map(_._2)
+        _list = _list.tail
       }
+      result
     }
 
   def rollingTimeThreshold(list: List[(Date, HttpTrafficLog)], seconds: Int, upBound: Int, lowBound: Int): List[HttpTrafficLog] =

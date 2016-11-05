@@ -10,6 +10,7 @@ import spray.json._
 import me.bayee.internetsecurity.util.StringUtil._
 import scala.xml.XML
 
+
 /**
   * Created by mofan on 16-9-27.
   */
@@ -21,8 +22,10 @@ object AttactDetectionModel extends App {
     val sc = new SparkContext(conf)
 
     val input = sc
-      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .newAPIHadoopFile((xml \ "input").text + args(0), classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
+      .distinct()
+      .filter(_.uri.isDefined)
 
     // start the model
     val base = input.filter(_.http_code.getOrElse(-1) == 200)
@@ -31,7 +34,9 @@ object AttactDetectionModel extends App {
       base.filter { htl =>
         (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode.urlDecode.getParamString).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined
       }
-        .map(_.toModelInput.toKeyValueWithId((xml \ "id").text))
+        .map(_.toModelInput)
+          .distinct()
+          .map(_.toKeyValueWithId((node \ "id").text))
         .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }

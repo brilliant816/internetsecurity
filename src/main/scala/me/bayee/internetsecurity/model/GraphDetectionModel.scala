@@ -22,8 +22,9 @@ object GraphDetectionModel extends App {
     val sc = new SparkContext(conf)
 
     val input = sc
-      .newAPIHadoopFile((xml \ "input").text, classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
+      .newAPIHadoopFile((xml \ "input").text + args(0), classOf[AvroKeyInputFormat[GenericRecord]], classOf[AvroKey[GenericRecord]], classOf[NullWritable])
       .map(_._1.datum.toString.parseJson.convertTo[HttpTrafficLog])
+      .distinct()
 
     // start the model
     val inDegreeZero = input.filter(_.refer_info.isEmpty)
@@ -44,7 +45,9 @@ object GraphDetectionModel extends App {
       base.filter { htl =>
         (node \ "regex").text.r.findFirstIn(htl.uri.getOrElse("").base64Decode).isDefined || (node \ "regex").text.r.findFirstIn(htl.query_param.getOrElse("").base64Decode).isDefined
       }
-        .map(_.toModelInput.toKeyValueWithId((node \ "id").text))
+        .map(_.toModelInput)
+          .distinct()
+          .map(_.toKeyValueWithId((node \ "id").text))
         .saveAsSequenceFile((node \ "hdfsPath").text)
     }
   }

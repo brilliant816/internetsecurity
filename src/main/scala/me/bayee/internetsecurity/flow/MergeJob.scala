@@ -21,13 +21,13 @@ object MergeJob extends App {
       .set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
 
-    val idWeightMap = (xml \ "group" \ "record").map(node => ((node \ "id").text, (node \ "weight").text.toInt)).foldLeft(new util.HashMap[String,Int]()){(last,cur)=>
-      last.put(cur._1,cur._2)
+    val idWeightMap = (xml \ "group" \ "record").map(node => ((node \ "id").text, (node \ "weight").text.toInt)).foldLeft(new util.HashMap[String, Int]()) { (last, cur) =>
+      last.put(cur._1, cur._2)
       last
     }
 
-    val id2Props = (xml \ "names" \ "record").map(node => ((node \ "id").text, ((node \ "name").text, (node \ "weight").text.toInt, (node \ "threatLevel").text.toInt))).foldLeft(new util.HashMap[String,(String,Int,Int)]()){(last,cur) =>
-      last.put(cur._1,cur._2)
+    val id2Props = (xml \ "names" \ "record").map(node => ((node \ "id").text, ((node \ "name").text, (node \ "weight").text.toInt, (node \ "threatLevel").text.toInt))).foldLeft(new util.HashMap[String, (String, Int, Int)]()) { (last, cur) =>
+      last.put(cur._1, cur._2)
       last
     }
 
@@ -50,22 +50,22 @@ object MergeJob extends App {
         if (idNotInGroup) (key, (mi, ids, ids))
         else {
           val totalWeight = ids.foldLeft(0) { (last, cur) => last + idWeightMap.get(cur) }
-          if (totalWeight >= (xml \ "group" \ "logBound").text.toInt) (key, (mi, ids, ids))
+          if (totalWeight >= (xml \ "group" \ "lowBound").text.toInt) (key, (mi, ids, ids))
           else (key, (mi, ids, List.empty[String]))
         }
     }
       .filter(_._2._3.nonEmpty)
 
     pipe
-        .map{
-          case (key,(mi,ids,_)) =>
-            (mi, ids.map(id => id2Props.get(id)._1))
-        }
+      .map {
+        case (key, (mi, ids, _)) =>
+          (mi, ids.map(id => id2Props.get(id)._1))
+      }
       .foreachPartition { iter =>
         val conf = HBaseConfiguration.create()
-        conf.set("hbase.zookeeper.property.clientPort", (xml \ "zookeeper" \ "property" \ "clientPort").text)
-        conf.set("hbase.zookeeper.quorum", (xml \ "zookeeper" \ "quorum").text)
-        conf.set("hbase.master", (xml \ "master").text)
+        conf.set("hbase.zookeeper.property.clientPort", (xml \ "hbase" \ "zookeeper" \ "property" \ "clientPort").text)
+        conf.set("hbase.zookeeper.quorum", (xml \ "hbase" \ "zookeeper" \ "quorum").text)
+        conf.set("hbase.master", (xml \ "hbase" \ "master").text)
 
         val table = new HTable(conf, "internet_security")
         iter.foreach {
@@ -89,13 +89,13 @@ object MergeJob extends App {
     Class.forName("com.mysql.jdbc.Driver").newInstance()
     val connection = DriverManager.getConnection((xml \ "mysql" \ "host").text, (xml \ "mysql" \ "username").text, (xml \ "mysql" \ "password").text)
     pipe
-        .map{
-          case (key, (mi, _,targetIds)) =>
-            val targetId = targetIds.map(id2Props.get).sortWith(_._2 > _._2).head
-            ((mi.visitTime.getOrElse("").split(" ")(0),targetId._1,mi.url.getOrElse(""),targetId._3),1)
-        }
+      .map {
+        case (key, (mi, _, targetIds)) =>
+          val targetId = targetIds.map(id2Props.get).sortWith(_._2 > _._2).head
+          ((mi.visitTime.getOrElse("").split(" ")(0), targetId._1, mi.url.getOrElse(""), targetId._3), 1)
+      }
       .reduceByKey(_ + _)
-      .take(Int.MaxValue)
+      .toLocalIterator
       .foreach {
         case ((date, threatType, url, threatLevel), threatCount) =>
           val statement = connection.prepareStatement("insert into threat_log_summary (threat_date, threat_type, url, threat_level, threat_count) values (?,?,?,?,?)")
@@ -108,20 +108,5 @@ object MergeJob extends App {
           statement.close()
       }
     connection.close()
-  }
-}
-import scala.collection.JavaConversions._
-object Test extends App {
-  override def main(args: Array[String]): Unit = {
-    val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("merge_job.xml"))
-    val idWeightMap = (xml \ "group" \ "record")
-      .map(node =>
-        ((node \ "id").text, (node \ "weight").text.toInt)
-      )
-      .foldLeft(new util.HashMap[String,Int]()){(last,cur) =>
-        last.put(cur._1,cur._2)
-        last
-      }
-    idWeightMap.foreach(println)
   }
 }

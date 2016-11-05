@@ -11,8 +11,8 @@
             <id>402</id>
             <name>frequency detection</name>
             <global>
-                <count>1000</count>
-                <seconds>300</seconds>
+                <count>10000</count>
+                <seconds>30</seconds>
             </global>
             <urls>
                 <element>
@@ -28,8 +28,8 @@
             <name>page percent detection</name>
             <global>
                 <seconds>300</seconds>
-                <upBound>100</upBound>
-                <lowBound>10</lowBound>
+                <upBound>300</upBound>
+                <lowBound>3</lowBound>
             </global>
             <urls>
                 <element>
