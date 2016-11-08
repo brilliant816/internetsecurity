@@ -1,0 +1,11 @@
+<rData>
+    <training>
+        <seqLength>800</seqLength>
+        <input>/user/root/mofan/input</input>
+        <hdfsPath>/user/root/mofan/r_model_training</hdfsPath>
+    </training>
+    <predict>
+        <input>/user/root/mofan/input</input>
+        <hdfsPath>/user/root/mofan/r_model_predict</hdfsPath>
+    </predict>
+</rData>

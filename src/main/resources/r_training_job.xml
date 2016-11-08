@@ -1,0 +1,16 @@
+<rTrainingJob>
+    <hive>
+        <ip>192.168.0.229</ip>
+        <port>10000</port>
+        <userName>huayun</userName>
+        <password>12346</password>
+    </hive>
+    <r>
+        <remoteServer>userproc</remoteServer>
+        <script>/home/mofan/train.R</script>
+        <inputTable>r_model_input</inputTable>
+        <seqLength>800</seqLength>
+        <threshold>0.01</threshold>
+        <outputFolder>/home/mofan/tmp/</outputFolder>
+    </r>
+</rTrainingJob>

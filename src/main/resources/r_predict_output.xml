@@ -1,0 +1,6 @@
+<rPredictOutput>
+    <inputModel>/user/root/mofan/r_model_output</inputModel>
+    <input>/user/root/mofan/input</input>
+    <id>901</id>
+    <hdfsPath>/user/root/mofan/901</hdfsPath>
+</rPredictOutput>

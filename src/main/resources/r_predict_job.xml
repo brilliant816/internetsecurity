@@ -1,0 +1,14 @@
+<rPredictJob>
+    <hive>
+        <ip>192.168.0.229</ip>
+        <port>10000</port>
+        <userName>huayun</userName>
+        <password>12346</password>
+    </hive>
+    <r>
+        <remoteServer>userproc</remoteServer>
+        <script>/home/mofan/predict.R</script>
+        <inputTable>r_model_predict</inputTable>
+        <outputFolder>/home/mofan/tmp/</outputFolder>
+    </r>
+</rPredictJob>
