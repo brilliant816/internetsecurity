@@ -7,4 +7,4 @@ spark-submit \
 --deploy-mode "cluster" \
 --class "me.bayee.internetsecurity.r.RData" \
 --name "RModel" \
-${base_path}/../lib/internetsecurity-1.0-SNAPSHOT-jar-with-dependencies.jar / training
+${base_path}/../lib/internetsecurity-1.0-SNAPSHOT-jar-with-dependencies.jar $1 training

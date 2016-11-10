@@ -8,7 +8,7 @@
     <r>
         <remoteServer>userproc</remoteServer>
         <script>/home/mofan/train.R</script>
-        <inputTable>r_model_input</inputTable>
+        <inputTable>r_model_training</inputTable>
         <seqLength>800</seqLength>
         <threshold>0.01</threshold>
         <outputFolder>/home/mofan/tmp/</outputFolder>
