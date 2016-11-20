@@ -1,0 +1,14 @@
+<hitDbDetectionModel>
+    <input>/user/root/mofan/input/</input>
+    <rules>
+        <rule>
+            <id>601</id>
+            <loginRegex>(login)</loginRegex>
+            <seconds>300</seconds>
+            <count>10</count>
+            <failureRegex>(login)</failureRegex>
+            <failureCount>20</failureCount>
+            <hdfsPath>/user/root/mofan/601</hdfsPath>
+        </rule>
+    </rules>
+</hitDbDetectionModel>

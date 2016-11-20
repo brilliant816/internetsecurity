@@ -1,0 +1,12 @@
+<urlRedirectModel>
+    <input>/user/root/mofan/input/</input>
+    <rules>
+        <rule>
+            <id>501</id>
+            <regex>(www)</regex>
+            <count>5</count>
+            <mean>300</mean>
+            <hdfsPath>/user/root/mofan/501</hdfsPath>
+        </rule>
+    </rules>
+</urlRedirectModel>
