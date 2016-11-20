@@ -207,5 +207,17 @@
             <weight>19</weight>
             <threatLevel>1</threatLevel>
         </record>
+        <record>
+            <id>501</id>
+            <name>重定向</name>
+            <weight>20</weight>
+            <threatLevel>1</threatLevel>
+        </record>
+        <record>
+            <id>601</id>
+            <name>撞库攻击</name>
+            <weight>21</weight>
+            <threatLevel>1</threatLevel>
+        </record>
     </names>
 </mergeJob>
