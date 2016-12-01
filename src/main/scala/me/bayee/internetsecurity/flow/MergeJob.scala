@@ -67,7 +67,7 @@ object MergeJob extends App {
         conf.set("hbase.zookeeper.quorum", (xml \ "hbase" \ "zookeeper" \ "quorum").text)
         conf.set("hbase.master", (xml \ "hbase" \ "master").text)
 
-        val table = new HTable(conf, "internet_security")
+        val table = new HTable(conf, "Bdsec_ns1:internet_security")
         iter.foreach {
           case (mi, ids) =>
             val put = new Put(s"${mi.visitTime.get}#${mi.serverIp.getOrElse("")}".getBytes)

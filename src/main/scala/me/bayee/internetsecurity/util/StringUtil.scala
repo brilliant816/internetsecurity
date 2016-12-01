@@ -31,7 +31,7 @@ case class RichString(str: String) {
 
   def getParamString = {
     val index = str.indexOf("?")
-    if(index > 0) str.substring(index + 1)
+    if (index > 0) str.substring(index + 1)
     else ""
   }
 
@@ -57,5 +57,9 @@ case class RichString(str: String) {
       new String(decoder.decodeBuffer(str.replace("[BASE64-DATA]", "").replace("[/BASE64-DATA]", "")))
     } else str
 
-  def urlDecode: String = URLDecoder.decode(str, "utf-8")
+  def urlDecode: String = try {
+    URLDecoder.decode(str, "utf-8")
+  } catch {
+    case t: Throwable => str
+  }
 }

@@ -19,7 +19,7 @@ import scala.xml.XML
 object RData extends App {
   override def main(args: Array[String]): Unit = {
     val xml = XML.load(this.getClass.getClassLoader.getResourceAsStream("r_data.xml"))
-    val dir = args(0)
+    val dir = args(0) // /2016/11/11
     val mode = args(1) // training or predict
 
     val input = if (mode == "training") (xml \ "training" \ "input").text + dir else (xml \ "predict" \ "input").text + dir

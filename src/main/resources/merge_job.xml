@@ -107,7 +107,7 @@
         </record>
         <record>
             <id>103</id>
-            <name>Webshell规则未匹配/name>
+            <name>Webshell规则未匹配</name>
             <weight>3</weight>
             <threatLevel>2</threatLevel>
         </record>
