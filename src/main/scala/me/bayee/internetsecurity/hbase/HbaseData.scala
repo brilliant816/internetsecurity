@@ -1,3 +1,5 @@
+package me.bayee.internetsecurity.hbase
+
 import me.bayee.internetsecurity.pojo.{HttpTrafficLog}
 import me.bayee.internetsecurity.util.AvroUtil._
 import me.bayee.internetsecurity.util.StringUtil._
