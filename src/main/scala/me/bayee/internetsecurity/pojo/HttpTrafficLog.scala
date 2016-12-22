@@ -5,8 +5,12 @@ import spray.json.DefaultJsonProtocol
 /**
   * Created by mofan on 16-10-23.
   */
-object HttpTrafficLog extends DefaultJsonProtocol {
+object HttpTrafficLog extends DefaultJsonProtocol with BasicPojo{
   implicit val _format = jsonFormat18(apply)
+  val key = "HttpTrafficLog"
+  val schemaPath = "schema/HttpTrafficLog.avsc"
+  val schema = buildSchema(HttpTrafficLog)
+  val schemaMap = Map((key,schema))
 }
 
 case class HttpTrafficLog(visit_time: Option[String],

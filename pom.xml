@@ -7,7 +7,13 @@
     <groupId>me.bayee</groupId>
     <artifactId>internetsecurity</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+	<repositories>
+		<repository>
+		    <id>cloudera-repo-releases</id>
+		    <url>https://repository.cloudera.com/artifactory/repo/</url>
+	  </repository>
+	</repositories>
+	
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -27,6 +33,11 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
+            <version>1.0.0-cdh5.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
             <version>1.0.0-cdh5.5.2</version>
         </dependency>
         <dependency>

@@ -1,0 +1,4 @@
+<hbaseData>
+    <tableName>B_NETWORK_TRAFFIC</tableName>
+    <outputDir>/user/root/mofan/input</outputDir>
+</hbaseData>
